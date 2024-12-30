@@ -13,13 +13,11 @@ import (
 func main() {
 	goutils.InitZeroLog()
 
-	// 获取 APPDATA 环境变量值
 	appData := os.Getenv("APPDATA")
 	if appData == "" {
-		fmt.Println("APPDATA environment variable is not set.")
-		return
+		log.Fatal().Msg("APPDATA environment variable is not set.")
 	}
-	log.Debug().Str("appData", appData).Msg("")
+	// log.Debug().Str("appData", appData).Msg("")
 
 	pattern := filepath.Join(appData, "Brotato", "*", "save_v2.json")
 
@@ -33,7 +31,6 @@ func main() {
 		log.Fatal().Msg("No save_v2.json files found. Please run the game at least once.")
 	}
 
-	// 输出匹配到的文件路径列表
 	for _, match := range matches {
 		log.Info().Str("match", match).Msg("Found save_v2.json file")
 		err := goutils.CopyFile(match, fmt.Sprintf("%s.bak.%s", match, goutils.TimeStrSec()))
@@ -56,6 +53,11 @@ func main() {
 			log.Warn().Err(err).Msg("Error writing save_v2.json file")
 			continue
 		}
+
+		log.Info().Str("match", match).Msg("Updated save_v2.json file")
 	}
 
+	// wait for user input
+	fmt.Print("Press 'Enter' to exit...")
+	fmt.Scanln()
 }
