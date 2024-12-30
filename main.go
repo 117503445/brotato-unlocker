@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -138,18 +139,22 @@ func Process(paths ...string) {
 		"materials_collected": 20000,
 	}
 
-	fileOut := "out.json"
 
-	fileOld := "save_v2.json"
+	fileSave := "save_v2.json"
 
 	oldJSON := make(map[string]interface{})
-	if goutils.FileExists(fileOld) {
-		log.Info().Str("fileOld", fileOld).Msg("Reading file")
-		err := goutils.ReadJSON(fileOld, &oldJSON)
+	if goutils.FileExists(fileSave) {
+		fileBackup := fmt.Sprintf("save_v2.json.bak.%s", goutils.TimeStrSec())
+		err := goutils.CopyFile(fileSave, fileBackup)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to copy file")
+		}
+		log.Info().Str("fileOld", fileSave).Msg("Reading file")
+		err = goutils.ReadJSON(fileSave, &oldJSON)
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to read file")
 		}
-		log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
+		// log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
 	} else {
 		log.Info().Msg("Using empty Save file")
 		// use initJSONBytes
@@ -162,11 +167,11 @@ func Process(paths ...string) {
 	for key, value := range newJSON {
 		oldJSON[key] = value
 	}
-	err := goutils.WriteJSON(fileOut, oldJSON)
+	err := goutils.WriteJSON(fileSave, oldJSON)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to write file")
 	}
-	log.Info().Str("fileOut", fileOut).Msg("Wrote file")
+	log.Info().Str("fileSave", fileSave).Msg("Wrote file")
 }
 
 func main() {

@@ -1,0 +1,37 @@
+name: Github Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+    steps:
+      - uses: actions/checkout@master
+
+      # https://github.com/actions/setup-go
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.4"
+
+      - run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o brotato-unlocker.exe .
+      - run: go run .
+
+      # https://github.com/softprops/action-gh-release
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./brotato-unlocker.exe
+            ./save_v2.json
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
