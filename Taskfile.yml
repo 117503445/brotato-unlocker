@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+  default:
+    desc: "The default task" 
+    cmds:
+      - docker build -t 11750445/brotato-unlocker .
+      - docker run --rm -v $(pwd):/workspace 11750445/brotato-unlocker

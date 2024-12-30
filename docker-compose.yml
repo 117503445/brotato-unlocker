@@ -1,0 +1,14 @@
+services:
+  brotato-unlocker-dev:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+        - ./:/workspace
+        - brotato-unlocker-dev-vsc:/root/.vscode-server
+        - ~/.ssh:/root/.ssh
+    stdin_open: true
+    tty: true
+
+volumes:
+  brotato-unlocker-dev-vsc:

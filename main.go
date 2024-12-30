@@ -2,14 +2,20 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"io"
 	"os"
 	"strings"
+
+	_ "embed"
 
 	"github.com/117503445/goutils"
 	"github.com/imroc/req/v3"
 	"github.com/rs/zerolog/log"
 )
+
+//go:embed init.json
+var initJSONBytes []byte
 
 func Download(client *req.Client, url string) string {
 	fileName := strings.Split(url, "/")[len(strings.Split(url, "/"))-1]
@@ -76,14 +82,12 @@ func Process(paths ...string) {
 			}
 		}
 	}
-	for _, challenge := range []string{"chal_survivor_1", "chal_survivor_2", "chal_survivor_3", "chal_survivor_4", "chal_survivor_5", "chal_gatherer_1", "chal_gatherer_2", "chal_gatherer_3", "chal_gatherer_4", "chal_gatherer_5", "chal_difficulty_0", "chal_difficulty_1", "chal_difficulty_2", "chal_difficulty_3", "chal_difficulty_4", "chal_difficulty_5"} {
-		map_prefix_keys["challenges_completed"] = append(map_prefix_keys["challenges_completed"], challenge)
-	}
+	map_prefix_keys["challenges_completed"] = append(map_prefix_keys["challenges_completed"], []string{"chal_survivor_1", "chal_survivor_2", "chal_survivor_3", "chal_survivor_4", "chal_survivor_5", "chal_gatherer_1", "chal_gatherer_2", "chal_gatherer_3", "chal_gatherer_4", "chal_gatherer_5", "chal_difficulty_0", "chal_difficulty_1", "chal_difficulty_2", "chal_difficulty_3", "chal_difficulty_4", "chal_difficulty_5"}...)
 	for _, character := range map_prefix_keys["characters_unlocked"] {
 		characterWithoutPrefix := strings.TrimPrefix(character, "character_")
-		log.Debug().Str("character", character).Str("characterWithoutPrefix", characterWithoutPrefix).Msg("Character")
+		// log.Debug().Str("character", character).Str("characterWithoutPrefix", characterWithoutPrefix).Msg("Character")
 
-		map_prefix_keys["challenges_completed"] = append(map_prefix_keys["challenges_completed"], "chal_" +characterWithoutPrefix)
+		map_prefix_keys["challenges_completed"] = append(map_prefix_keys["challenges_completed"], "chal_"+characterWithoutPrefix)
 	}
 
 	difficultiesUnlocked := make([]map[string]interface{}, 0)
@@ -135,34 +139,40 @@ func Process(paths ...string) {
 	}
 
 	fileOut := "out.json"
+
 	fileOld := "save_v2.json"
 
 	oldJSON := make(map[string]interface{})
 	if goutils.FileExists(fileOld) {
+		log.Info().Str("fileOld", fileOld).Msg("Reading file")
 		err := goutils.ReadJSON(fileOld, &oldJSON)
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to read file")
 		}
 		log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
-		for key, value := range newJSON {
-			oldJSON[key] = value
-		}
-		err = goutils.WriteJSON(fileOut, oldJSON)
-		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to write file")
-		}
 	} else {
-		err := goutils.WriteJSON(fileOut, newJSON)
+		log.Info().Msg("Using empty Save file")
+		// use initJSONBytes
+		err := json.Unmarshal(initJSONBytes, &oldJSON)
 		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to write file")
+			log.Fatal().Err(err).Msg("Failed to unmarshal initJSONBytes")
 		}
+		// log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
 	}
+	for key, value := range newJSON {
+		oldJSON[key] = value
+	}
+	err := goutils.WriteJSON(fileOut, oldJSON)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to write file")
+	}
+	log.Info().Str("fileOut", fileOut).Msg("Wrote file")
 }
 
 func main() {
 	goutils.InitZeroLog()
 
-	log.Info().Msg("Hello World")
+	// log.Info().Msg("Hello World")
 	client := req.C()
 	f1 := Download(client, "https://raw.githubusercontent.com/BrotatoMods/Brotato-Translations/refs/heads/main/translations-v1.1.6.0-dlc_1.csv")
 	f2 := Download(client, "https://raw.githubusercontent.com/BrotatoMods/Brotato-Translations/refs/heads/main/translations-v1.1.6.0.csv")

@@ -1,0 +1,96 @@
+{
+  "challenges_completed": [
+
+  ],
+  "characters_unlocked": [
+
+  ],
+  "consumables_unlocked": [
+
+  ],
+  "current_run_state": {
+    "has_run_state": false
+  },
+  "data": {
+    "enemies_killed": 0,
+    "enemies_killed_far_away": 0,
+    "materials_collected": 0,
+    "steps_taken": 0,
+    "trees_killed": 0
+  },
+  "difficulties_unlocked": [
+
+  ],
+  "inactive_mods": [
+
+  ],
+  "items_unlocked": [
+
+  ],
+  "read_announcements": [
+
+  ],
+  "settings": {
+    "alt_gold_sounds": false,
+    "background": 0,
+    "character_highlighting": false,
+    "coop_mode_toggled": false,
+    "damage_display": true,
+    "darken_screen": true,
+    "deactivated_dlc_tracks": [
+
+    ],
+    "deactivated_dlcs": [
+
+    ],
+    "endless_mode_toggled": false,
+    "endless_score_storing": 0,
+    "enemy_scaling": {
+      "damage": 1,
+      "health": 1,
+      "speed": 1
+    },
+    "explosion_opacity": 1,
+    "font_size": 1,
+    "fullscreen": true,
+    "hp_bar_on_bosses": true,
+    "hp_bar_on_character": true,
+    "keep_lock": true,
+    "language": "zh",
+    "legacy_tracks": false,
+    "limit_fps": false,
+    "lock_coop_camera": false,
+    "manual_aim": false,
+    "manual_aim_on_mouse_press": false,
+    "mouse_only": false,
+    "movement_with_gamepad": true,
+    "mute_on_focus_lost": false,
+    "optimize_end_waves": false,
+    "pause_on_focus_lost": true,
+    "projectile_highlighting": false,
+    "projectile_opacity": 1,
+    "retry_wave": false,
+    "screenshake": true,
+    "share_coop_loot": true,
+    "streamer_mode_tracks": true,
+    "version": "",
+    "visual_effects": true,
+    "volume": {
+      "master": 0.5,
+      "music": 0.25,
+      "sound": 0.75
+    },
+    "weapon_highlighting": false,
+    "zone_selected": 0
+  },
+  "upgrades_unlocked": [
+
+  ],
+  "version": 2,
+  "weapons_unlocked": [
+
+  ],
+  "zones_unlocked": [
+
+  ]
+}
