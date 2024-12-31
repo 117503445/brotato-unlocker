@@ -3,6 +3,7 @@ package process
 import (
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"io"
 	"strings"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func GetNewJson(oldJson map[string]interface{}) {
+func GetNewJson() string {
 	keys := make([]string, 0)
 	for _, csvContent := range [][]byte{assets.Csv, assets.CsvDLC1} {
 		reader := csv.NewReader(bytes.NewReader(csvContent))
@@ -105,36 +106,14 @@ func GetNewJson(oldJson map[string]interface{}) {
 		"materials_collected": 20000,
 	}
 
-	// fileSave := "save_v2.json"
-
-	// oldJSON := make(map[string]interface{})
-	// if goutils.FileExists(fileSave) {
-	// 	fileBackup := fmt.Sprintf("save_v2.json.bak.%s", goutils.TimeStrSec())
-	// 	err := goutils.CopyFile(fileSave, fileBackup)
-	// 	if err != nil {
-	// 		log.Fatal().Err(err).Msg("Failed to copy file")
-	// 	}
-	// 	log.Info().Str("fileOld", fileSave).Msg("Reading file")
-	// 	err = goutils.ReadJSON(fileSave, &oldJSON)
-	// 	if err != nil {
-	// 		log.Fatal().Err(err).Msg("Failed to read file")
-	// 	}
-	// 	// log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
-	// } else {
-	// 	log.Info().Msg("Using empty Save file")
-	// 	// use initJSONBytes
-	// 	err := json.Unmarshal(assets.InitJSONBytes, &oldJSON)
-	// 	if err != nil {
-	// 		log.Fatal().Err(err).Msg("Failed to unmarshal initJSONBytes")
-	// 	}
-	// 	// log.Info().Interface("oldJSON", oldJSON).Msg("Old JSON")
-	// }
-	for key, value := range newJSON {
-		oldJson[key] = value
+	newJsonContent, err := json.Marshal(newJSON)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to marshal new JSON")
 	}
-	// err := goutils.WriteJSON(fileSave, oldJSON)
-	// if err != nil {
-	// 	log.Fatal().Err(err).Msg("Failed to write file")
-	// }
-	// log.Info().Str("fileSave", fileSave).Msg("Wrote file")
+
+	return string(newJsonContent)
+
 }
+
+
+var NewJson = GetNewJson()

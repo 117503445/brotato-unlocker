@@ -10,8 +10,12 @@ import (
 func main() {
 	goutils.InitZeroLog()
 
-	process.GetNewJson(assets.InitJson)
-	err := goutils.WriteJSON("save_v2.json", assets.InitJson)
+	mergedJson, err := process.MergeJSON(assets.InitJson, process.NewJson)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to merge JSON")
+	}
+
+	err = goutils.WriteText("save_v2.json", mergedJson)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to write JSON")
 	}

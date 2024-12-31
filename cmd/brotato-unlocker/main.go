@@ -39,16 +39,19 @@ func main() {
 			continue
 		}
 
-		var jsonContent map[string]interface{}
-		err = goutils.ReadJSON(match, &jsonContent)
+		oldJson, err := goutils.ReadText(match)
 		if err != nil {
 			log.Warn().Err(err).Msg("Error reading save_v2.json file")
 			continue
 		}
 
-		process.GetNewJson(jsonContent)
+		mergedJson, err := process.MergeJSON(oldJson, process.NewJson)
+		if err != nil {
+			log.Warn().Err(err).Msg("Error merging save_v2.json file")
+			continue
+		}
 
-		err = goutils.WriteJSON(match, jsonContent)
+		err = goutils.WriteText(match, mergedJson)
 		if err != nil {
 			log.Warn().Err(err).Msg("Error writing save_v2.json file")
 			continue

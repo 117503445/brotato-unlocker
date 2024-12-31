@@ -2,20 +2,10 @@ package assets
 
 import (
 	_ "embed"
-	"encoding/json"
 )
 
 //go:embed init.json
-var initJsonBytes []byte
-
-var InitJson map[string]interface{}
-
-func init() {
-	err := json.Unmarshal(initJsonBytes, &InitJson)
-	if err != nil {
-		panic(err)
-	}
-}
+var InitJson string
 
 //go:embed translations-v1.1.6.0.csv
 var Csv []byte
